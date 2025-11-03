@@ -1,0 +1,39 @@
+doctype html
+html(lang="es")
+    head
+        //- Metadatos y estilos globales
+        meta(charset="UTF-8")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title=title
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css")
+        link(rel="stylesheet", href="/css/style.css")
+
+        //- Fuentes
+        link(rel="preconnect", href="https://fonts.googleapis.com")
+        link(rel="preconnect", href="https://fonts.gstatic.com" crossorigin)
+        link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet")
+
+        //- Librerías de FullCalendar
+        script(src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js')
+        script(src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js')
+        
+        //- Script principal del cliente
+        script(defer, src="/js/calendar.js")
+
+        //- Config inyectada desde el servidor (API key / calendar id)
+        script.
+            window.calendarConfig = {
+                apiKey: !{JSON.stringify(apiKey || '')},
+                calendarId: !{JSON.stringify(calendarId || '')}
+            };
+
+    body
+        block content
+
+        #event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
+            .event-modal__backdrop
+            .event-modal__panel(tabindex="-1")
+                button.event-modal__close(type="button", aria-label="Cerrar") ×
+                h2.event-modal__title
+                p.event-modal__time
+                div.event-modal__description
