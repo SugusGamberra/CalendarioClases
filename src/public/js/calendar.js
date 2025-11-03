@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const apiKey = window.calendarConfig.apiKey;
     const calendarId = window.calendarConfig.calendarId;
     const notionCalendarId = window.calendarConfig.notionCalendarId;
+    const makeWebhookUrl = window.calendarConfig.makeWebhookUrl;
 
     const modal = document.getElementById('event-modal');
     const modalTitle = modal.querySelector('.event-modal__title');
@@ -11,6 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDescription = modal.querySelector('.event-modal__description');
     const modalCloseBtn = modal.querySelector('.event-modal__close');
     const modalBackdrop = modal.querySelector('.event-modal__backdrop');
+
+    const createModal = document.getElementById('create-event-modal');
+    const createModalTitleInput = createModal.querySelector('#event-title-input');
+    const createModalSaveBtn = createModal.querySelector('#create-modal-save');
+    const createModalCloseBtn = createModal.querySelector('#create-modal-close');
+    const createModalBackdrop = createModal.querySelector('#create-modal-backdrop');
+
+    let currentSelectionInfo = null;
 
     // Formateo de hora en español
     const formatTime = (date) => {
@@ -40,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
         slotMinTime: '07:00:00',
         slotMaxTime: '20:00:00',
         height: 'auto',
+        selectable: true,
+        selectMirror: true,
         slotLabelFormat: {
             hour: '2-digit',
             minute: '2-digit',
@@ -79,10 +90,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 modalDescription.innerHTML = 'No hay descripción disponible.';
             }
             modal.setAttribute('aria-hidden', 'false');
+        },
+        select: function(selectionInfo) {
+            currentSelectionInfo = selectionInfo;
+            createModalTitleInput.value = '';
+            createModal.setAttribute('aria-hidden', 'false');
+            setTimeout(() => {
+                createModalTitleInput.focus();
+            }, 100);
+            calendar.unselect(); 
         }
+        
     });
 
     calendar.render();
+
+    // Lógica para cerrar el modal y guardar
+
+    const closeCreateModal = () => {
+        createModal.setAttribute('aria-hidden', 'true');
+        currentSelectionInfo = null;
+    };
+
+    const saveEvent = () => {
+        const title = createModalTitleInput.value;
+        if (!title || !currentSelectionInfo) {
+            closeCreateModal();
+            return;
+        }
+
+        console.log('Enviando señal a Make...');
+
+        fetch(makeWebhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                title: title,
+                start: currentSelectionInfo.startStr,
+                end: currentSelectionInfo.endStr
+            })
+        })
+        .then(response => {
+            console.log('Evento enviado a Make correctamente');
+            setTimeout(() => {
+                calendar.refetchEvents(); 
+            }, 3000);
+
+            closeCreateModal();
+        })
+        .catch(error => {
+            console.error('Error mandando el webhook!:', error);
+            alert('Algo ha fallado al mandar la señal.');
+        });
+
+        closeCreateModal();
+    };
+
+    createModalCloseBtn.addEventListener('click', closeCreateModal);
+    createModalBackdrop.addEventListener('click', closeCreateModal);
+    createModalSaveBtn.addEventListener('click', saveEvent);
 
     // Partículas en el footer
     const footerInner = document.querySelector('.footer__inner');

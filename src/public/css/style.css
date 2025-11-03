@@ -316,3 +316,60 @@ td.fc-timegrid-axis {
         opacity: 0;
     }
 }
+
+/* Modal crear evento */
+.create-event-form {
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.create-event-form__label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.8;
+    margin-bottom: 8px;
+}
+
+/* El input para escribir el título */
+.create-event-form__input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.create-event-form__input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.create-event-form__input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+/* El botón de Guardar */
+.create-event-form__save {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: #1a1a1a;
+    background: #ffffff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-event-form__save:hover {
+    background: #dddddd;
+    transform: scale(1.02);
+}
