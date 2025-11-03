@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const apiKey = window.calendarConfig.apiKey;
     const calendarId = window.calendarConfig.calendarId;
+    const notionCalendarId = window.calendarConfig.notionCalendarId;
 
     const modal = document.getElementById('event-modal');
     const modalTitle = modal.querySelector('.event-modal__title');
@@ -53,10 +54,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Conexión con Google Calendar
         googleCalendarApiKey: apiKey,
-        events: {
-            googleCalendarId: calendarId,
-            className: 'gcal-event'
-        },
+        eventSources: [
+            {
+                googleCalendarId: calendarId,
+                className: 'gcal-event'
+            },
+            {
+                googleCalendarId: notionCalendarId,
+                color: '#ff9e4380',
+                className: 'notion-event'
+            }
+        ],
 
         // Clic en evento del calendario
         eventClick: function(info) {

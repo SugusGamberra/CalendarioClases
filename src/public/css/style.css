@@ -160,6 +160,37 @@ th.fc-timegrid-axis
     transition: all 0.3s ease;
 }
 
+.notion-event,
+.fc-event.notion-event {
+    background: rgba(255, 159, 67, 0.4) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 50px !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-left: none !important; 
+    padding: 4px 8px !important;
+    transition: all 0.3s ease; 
+}
+
+.notion-event .fc-event-main,
+.notion-event .fc-event-title,
+.notion-event .fc-event-time {
+    color: #ffffff !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+    font-weight: 600;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+}
+
+.notion-event:hover,
+.fc-event.notion-event:hover {
+    border-color: transparent !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transform: scale(1.03);
+}
+
 /* Hover eventos */
 .gcal-event:hover,
 .fc-event.gcal-event:hover {

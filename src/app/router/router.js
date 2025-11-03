@@ -4,7 +4,8 @@ router.get("/", (req, res) => {
     res.render("index", {
         title: "Inicio",
         apiKey: process.env.GOOGLE_API_KEY || '',
-        calendarId: process.env.GOOGLE_CALENDAR_ID || ''
+        calendarId: process.env.GOOGLE_CALENDAR_ID || '',
+        notionCalendarId: process.env.NOTION_CALENDAR_ID || ''
     });
 });
 
