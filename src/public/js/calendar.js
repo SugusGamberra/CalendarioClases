@@ -3,14 +3,31 @@ import { formatTime, createParticleEffect } from './utils.js';
 import { saveEvent, deleteEvent } from './api.js';
 import { initModalHandlers, initFooterEffect } from './ui.js';
 
+// contraseña
+let cachedToken = null;
+
+function getAuthToken() {
+    if (cachedToken) {
+        return cachedToken;
+    }
+    
+    const password = prompt("¡Acción protegida! Introduce la contraseña de administrador:");
+    
+    if (password) {
+        cachedToken = password;
+        return password;
+    }
+    
+    return null;
+}
+
 // listener del html
 document.addEventListener('DOMContentLoaded', () => {
     const calendarEl = document.getElementById('calendario');
     const { 
         apiKey, 
         calendarId, 
-        notionCalendarId,
-        secretToken
+        notionCalendarId
     } = calendarEl.dataset;
 
     // ver
@@ -123,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return alert('¡Oye! El título, el inicio y el fin son obligatorios.');
         }
 
-        // Llamar API
-        saveEvent(eventData, secretToken)
-            .catch((err) => {
-                console.error("Fallo al guardar:", err);
-            })
+        const token = getAuthToken();
+        if (!token) return;
+
+        saveEvent(eventData, token)
+            .catch((err) => { console.error("Fallo al guardar:", err); })
             .finally(() => {
                 createModalEl.setAttribute('aria-hidden', 'true');
                 setTimeout(() => calendar.refetchEvents(), 3000); 
@@ -138,11 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
     viewModalEl.querySelector('#modal-delete-btn').addEventListener('click', () => {
         const eventId = ui.getEventIdToDelete();
         
-        //llamar API
-        deleteEvent(eventId, secretToken)
-            .catch((err) => {
-                console.error("Fallo al borrar:", err);
-            })
+        const token = getAuthToken();
+        if (!token) return;
+
+        deleteEvent(eventId, token)
+            .catch((err) => { console.error("Fallo al borrar:", err); })
             .finally(() => {
                 viewModalEl.setAttribute('aria-hidden', 'true');
                 ui.clearEventIdToDelete();
