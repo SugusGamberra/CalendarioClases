@@ -1,24 +1,28 @@
 // nuevo evento (webhook)
-export const saveEvent = (eventData) => { 
+export const saveEvent = (eventData, token) => { 
     console.log('Enviando señal a nuestro servidor (/api/create)...');
     
     return fetch('/api/create', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(eventData)
     })
     .then(response => {
-        if (!response.ok) throw new Error('Respuesta de la api no fue OK');
-        console.log('¡serverr respondió OK!');
+        if (response.status === 401) throw new Error('Contraseña (token) incorrecta.');
+        if (!response.ok) throw new Error('La respuesta de /api/create no fue OK');
+        console.log('¡Servidor contestó OK!');
     })
     .catch(error => {
         console.error('¡Error llamando la api!:', error);
-        alert('No se pudo guardar el evento.');
+        alert('Error al guardar: ${error.message}');
     });
 };
 
 // borrar evento (webhook)
-export const deleteEvent = (eventId) => { 
+export const deleteEvent = (eventId, token) => { 
     if (!eventId) {
         alert('Error: No se ha seleccionado ningún ID de evento.');
         return Promise.reject('No event ID');
@@ -28,15 +32,19 @@ export const deleteEvent = (eventId) => {
     
     return fetch('/api/delete', { 
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ eventId: eventId })
     })
     .then(response => {
+        if (response.status === 401) throw new Error('Contraseña (token) incorrecta.');
         if (!response.ok) throw new Error('La respuesta de /api/delete no fue OK');
         console.log('¡Servidor contestó OK al borrar!');
     })
     .catch(error => {
         console.error('¡Error llamando a /api/delete!:', error);
-        alert('No se pudo borrar el evento.');
+        alert('Error al borrar: ${error.message}');
     });
 };

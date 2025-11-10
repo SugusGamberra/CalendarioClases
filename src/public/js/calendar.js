@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const { 
         apiKey, 
         calendarId, 
-        notionCalendarId
+        notionCalendarId,
+        secretToken
     } = calendarEl.dataset;
 
     // ver
@@ -123,22 +124,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Llamar API
-        saveEvent(eventData).finally(() => {
-            createModalEl.setAttribute('aria-hidden', 'true');
-            setTimeout(() => calendar.refetchEvents(), 3000); 
-        });
+        saveEvent(eventData, secretToken)
+            .catch((err) => {
+                console.error("Fallo al guardar:", err);
+            })
+            .finally(() => {
+                createModalEl.setAttribute('aria-hidden', 'true');
+                setTimeout(() => calendar.refetchEvents(), 3000); 
+            });
     });
 
     // botón borrar (ver)
     viewModalEl.querySelector('#modal-delete-btn').addEventListener('click', () => {
         const eventId = ui.getEventIdToDelete();
         
-        // Llamar API
-        deleteEvent(eventId).finally(() => {
-            viewModalEl.setAttribute('aria-hidden', 'true');
-            ui.clearEventIdToDelete();
-            setTimeout(() => calendar.refetchEvents(), 5000);
-        });
+        //llamar API
+        deleteEvent(eventId, secretToken)
+            .catch((err) => {
+                console.error("Fallo al borrar:", err);
+            })
+            .finally(() => {
+                viewModalEl.setAttribute('aria-hidden', 'true');
+                ui.clearEventIdToDelete();
+                setTimeout(() => calendar.refetchEvents(), 5000);
+            });
     });
     
 });
