@@ -5,7 +5,7 @@ html(lang="es")
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
         title=title
-        link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/main.min.css")
+        
         link(rel="stylesheet", href="/css/style.css")
 
         //- Fuentes
@@ -18,37 +18,7 @@ html(lang="es")
         script(src='https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js')
         
         //- Script principal del cliente
-        script(defer, src="/js/calendar.js")
-
-        //- Config inyectada desde el servidor (API key / calendar id)
-        script.
-            window.calendarConfig = {
-                apiKey: !{JSON.stringify(apiKey || '')},
-                calendarId: !{JSON.stringify(calendarId || '')},
-                notionCalendarId: !{JSON.stringify(notionCalendarId || '')},
-                makeWebhookUrl: !{JSON.stringify(makeWebhookUrl || '')}
-            };
+        script(type="module", src="/js/calendar.js")
 
     body
         block content
-
-        #event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
-            .event-modal__backdrop
-            .event-modal__panel(tabindex="-1")
-                button.event-modal__close(type="button", aria-label="Cerrar") ×
-                h2.event-modal__title
-                p.event-modal__time
-                div.event-modal__description
-        
-        #create-event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
-            .event-modal__backdrop#create-modal-backdrop
-            .event-modal__panel(tabindex="-1")
-                button.event-modal__close#create-modal-close(type="button", aria-label="Cerrar") ×
-                
-                h2.event-modal__title Crear Nuevo Evento
-                
-                .create-event-form
-                    label.create-event-form__label(for="event-title-input") Título del Evento:
-                    input.create-event-form__input#event-title-input(type="text", placeholder="Ej: Comprar el pan")
-                
-                button.create-event-form__save#create-modal-save(type="button") Guardar

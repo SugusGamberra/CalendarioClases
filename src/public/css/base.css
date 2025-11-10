@@ -1,0 +1,15 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-image: url('/img/background.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    min-height: 100vh;
+}

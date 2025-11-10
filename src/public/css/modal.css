@@ -1,0 +1,188 @@
+/* ver evento, panel, cerrarlo... */
+.event-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+}
+
+.event-modal__panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    width: 90%;
+    max-width: 500px;
+    padding: 25px;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+}
+
+.event-modal__close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: white;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+.event-modal__close:hover {
+    opacity: 1;
+}
+
+.event-modal__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+.event-modal__time {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+.event-modal__description {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.event-modal[aria-hidden="false"] .event-modal__backdrop {
+    opacity: 1;
+}
+
+.event-modal[aria-hidden="false"] .event-modal__panel {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.event-modal[aria-hidden="true"] {
+    display: none;
+}
+
+/* Crear evento */
+.create-event-form {
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.create-event-form__label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.8;
+    margin-bottom: 8px;
+}
+
+.create-event-form__input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #ffffff;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.create-event-form__input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.create-event-form__input:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.create-event-form__textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-family: 'Poppins', sans-serif;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #ffffff;
+    resize: vertical;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.create-event-form__textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.create-event-form__textarea:focus {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.create-event-form__datetime {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+.create-event-form__datetime > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.create-event-form__input[type="datetime-local"] {
+    color-scheme: dark;
+}
+
+.create-event-form__save {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: #1a1a1a;
+    background: #ffffff;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-event-form__save:hover {
+    background: #dddddd;
+    transform: scale(1.02);
+}
+
+/* Borrar evento */
+
+.event-modal__delete {
+    width: 100%;
+    padding: 12px;
+    margin-top: 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    background: rgba(220, 53, 69, 0.6);
+    border: 1px solid rgba(220, 53, 69, 0.8);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.event-modal__delete:hover {
+    background: rgba(220, 53, 69, 0.9);
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
+    transform: scale(1.02);
+}

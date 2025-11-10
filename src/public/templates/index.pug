@@ -2,11 +2,53 @@ extends components/layout
 
 block content
     main#calendario-wrapper
-        div#calendario
+        //- Variables para js
+        div#calendario(
+            data-api-key=apiKey
+            data-calendar-id=calendarId
+            data-notion-calendar-id=notionCalendarId
+            data-make-webhook-url=makeWebhookUrl
+            data-make-delete-webhook-url=makeDeleteWebhookUrl
+        )
 
-
-    //- Footer (foto y enlace GitHub)
+    //- footer
     footer#site-footer.footer
         .footer__inner
             img.footer__avatar(src="https://avatars.githubusercontent.com/u/125316695?v=4", alt="Avatar")
             a.footer__github(href="https://github.com/SugusGamberra", target="_blank", rel="noopener noreferrer") GitHub
+
+    //- modales
+    #event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
+        .event-modal__backdrop
+        .event-modal__panel(tabindex="-1")
+            button.event-modal__close(type="button", aria-label="Cerrar") ×
+            h2.event-modal__title
+            p.event-modal__time
+            div.event-modal__description
+            button.event-modal__delete#modal-delete-btn(type="button") Eliminar Evento
+    
+    #create-event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
+        .event-modal__backdrop#create-modal-backdrop
+        .event-modal__panel(tabindex="-1")
+            button.event-modal__close#create-modal-close(type="button", aria-label="Cerrar") ×
+            
+            h2.event-modal__title Crear Nuevo Evento
+            
+            .create-event-form
+                div
+                    label.create-event-form__label(for="event-title-input") Título
+                    input.create-event-form__input#event-title-input(type="text", placeholder="Ej: Comprar el pan")
+                
+                div
+                    label.create-event-form__label(for="event-desc-input") Descripción
+                    textarea.create-event-form__textarea#event-desc-input(rows="3", placeholder="Detalles del evento...")
+
+                .create-event-form__datetime
+                    div
+                        label.create-event-form__label(for="event-start-input") Inicio
+                        input.create-event-form__input#event-start-input(type="datetime-local")
+                    div
+                        label.create-event-form__label(for="event-end-input") Fin
+                        input.create-event-form__input#event-end-input(type="datetime-local")
+
+            button.create-event-form__save#create-modal-save(type="button") Guardar
