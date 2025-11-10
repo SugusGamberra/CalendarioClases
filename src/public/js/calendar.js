@@ -1,12 +1,21 @@
 // importación módulos
 import { formatTime, createParticleEffect } from './utils.js';
 import { saveEvent, deleteEvent } from './api.js';
-import { initModalHandlers, initFooterEffect } from './ui.js';
+import { initModalHandlers, initFooterEffect, initLogoutButton } from './ui.js';
 
 // contraseña
+
+const TOKEN_STORAGE_KEY = 'calendar_auth_token';
+
 let cachedToken = null;
 
 function getAuthToken() {
+    const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+    if (storedToken) {
+        cachedToken = storedToken;
+        return storedToken;
+    }
+
     if (cachedToken) {
         return cachedToken;
     }
@@ -19,6 +28,19 @@ function getAuthToken() {
     }
     
     return null;
+}
+
+// guardar token en el localStorage
+
+function askToRememberToken(token) {
+    if (localStorage.getItem(TOKEN_STORAGE_KEY)) {
+        return;
+    }
+
+    if (confirm("¡Contraseña correcta! ¿Quieres 'Mantener la sesión iniciada' en este navegador?")) {
+        localStorage.setItem(TOKEN_STORAGE_KEY, token);
+        alert("¡Sesión guardada! No volverás a ver este mensaje.");
+    }
 }
 
 // listener del html
@@ -46,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // footer
     const footerInner = document.querySelector('.footer__inner');
 
+    // boton const cerrar sesion
+
+    const logoutButton = document.getElementById('logout-btn');
 
     // handlers de la UI
     const ui = initModalHandlers({
@@ -64,6 +89,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // inicializacion footer
     initFooterEffect(footerInner, createParticleEffect);
 
+    // Botón cerrar sesion
+
+    initLogoutButton(logoutButton, () => {
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+        cachedToken = null;
+        alert("¡Sesión cerrada! La próxima vez se te pedirá la contraseña.");
+    });
 
     // creación calendario
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -141,9 +173,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const token = getAuthToken();
-        if (!token) return;
+        if (!token) return; 
 
         saveEvent(eventData, token)
+            .then(() => {
+                askToRememberToken(token);
+            })
             .catch((err) => { console.error("Fallo al guardar:", err); })
             .finally(() => {
                 createModalEl.setAttribute('aria-hidden', 'true');
@@ -159,6 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!token) return;
 
         deleteEvent(eventId, token)
+            .then(() => {
+                askToRememberToken(token);
+            })
             .catch((err) => { console.error("Fallo al borrar:", err); })
             .finally(() => {
                 viewModalEl.setAttribute('aria-hidden', 'true');

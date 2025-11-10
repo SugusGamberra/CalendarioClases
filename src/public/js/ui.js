@@ -35,3 +35,10 @@ export const initFooterEffect = (footerEl, effectFn) => {
         footerEl.addEventListener('mousemove', effectFn);
     }
 };
+
+// boton cerrar sesions
+export const initLogoutButton = (buttonEl, onClickCallback) => {
+    if (buttonEl) {
+        buttonEl.addEventListener('click', onClickCallback);
+    }
+};
