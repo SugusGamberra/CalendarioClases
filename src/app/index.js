@@ -19,6 +19,7 @@ app.set("views", path.join(publicPath, 'templates'));
 app.set("view engine", "pug");
 
 // Middlewaree
+app.use(express.json());
 app.use(express.static(publicPath));
 app.use(morgan("dev"));
 app.use("/", router);

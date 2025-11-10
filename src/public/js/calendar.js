@@ -9,9 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const { 
         apiKey, 
         calendarId, 
-        notionCalendarId,
-        makeWebhookUrl,
-        makeDeleteWebhookUrl
+        notionCalendarId
     } = calendarEl.dataset;
 
     // ver
@@ -125,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Llamar API
-        saveEvent(makeWebhookUrl, eventData).finally(() => {
+        saveEvent(eventData).finally(() => {
             createModalEl.setAttribute('aria-hidden', 'true');
             setTimeout(() => calendar.refetchEvents(), 3000); 
         });
@@ -136,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const eventId = ui.getEventIdToDelete();
         
         // Llamar API
-        deleteEvent(makeDeleteWebhookUrl, eventId).finally(() => {
+        deleteEvent(eventId).finally(() => {
             viewModalEl.setAttribute('aria-hidden', 'true');
             ui.clearEventIdToDelete();
             setTimeout(() => calendar.refetchEvents(), 5000);
