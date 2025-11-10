@@ -6,7 +6,8 @@ router.get("/", (req, res) => {
         title: "Inicio",
         apiKey: process.env.GOOGLE_API_KEY || '',
         calendarId: process.env.GOOGLE_CALENDAR_ID || '',
-        notionCalendarId: process.env.NOTION_CALENDAR_ID || ''
+        notionCalendarId: process.env.NOTION_CALENDAR_ID || '',
+        secretToken: process.env.SECRET_TOKEN || ''
     });
 });
 
@@ -14,12 +15,18 @@ router.get("/", (req, res) => {
 
 router.post("/api/create", async (req, res) => {
     try {
-        const urlSecreta = process.env.MAKE_WEBHOOK_URL;
-        if (!urlSecreta) {
-            throw new Error("No se ha configurado la URL del webhook en .env");
+        const tokenRecibido = req.headers.authorization?.split(' ')[1];
+        const tokenSecreto = process.env.SECRET_TOKEN;
+        
+        if (!tokenRecibido || tokenRecibido !== tokenSecreto) {
+            console.warn('¡Intento de CREAR con token incorrecto!');
+            return res.status(401).json({ error: "No autorizado. Token inválido." });
         }
+
+        const urlSecreta = process.env.MAKE_WEBHOOK_URL;
         const eventData = req.body;
-        console.log('Recibida petición para CREAR:', eventData);
+        console.log('Recibida petición para CREAR (Autorizado):', eventData);
+
         const makeResponse = await fetch(urlSecreta, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -41,12 +48,18 @@ router.post("/api/create", async (req, res) => {
 
 router.post("/api/delete", async (req, res) => {
     try {
-        const urlSecreta = process.env.MAKE_DELETE_WEBHOOK_URL;
-        if (!urlSecreta) {
-            throw new Error("No se ha configurado la URL de borrado en .env");
+        const tokenRecibido = req.headers.authorization?.split(' ')[1];
+        const tokenSecreto = process.env.SECRET_TOKEN;
+
+        if (!tokenRecibido || tokenRecibido !== tokenSecreto) {
+            console.warn('¡Intento de BORRAR con token incorrecto!');
+            return res.status(401).json({ error: "No autorizado. Token inválido." });
         }
+
+        const urlSecreta = process.env.MAKE_DELETE_WEBHOOK_URL;
         const { eventId } = req.body;
-        console.log('Recibida petición para BORRAR:', eventId);
+        console.log('Recibida petición para BORRAR (Autorizado):', eventId);
+
         const makeResponse = await fetch(urlSecreta, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
