@@ -53,3 +53,42 @@ block content
                         input.create-event-form__input#event-end-input(type="datetime-local")
 
             button.create-event-form__save#create-modal-save(type="button") Guardar
+
+            //- modal login
+
+            #login-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
+                .event-modal__backdrop#login-modal-backdrop
+                .event-modal__panel(tabindex="-1")
+                    button.event-modal__close#login-modal-close(type="button", aria-label="Cerrar") ×
+                    
+                    h2.event-modal__title Acción Protegida
+                    p.event-modal__description Por favor, introduce la contraseña de administrador.
+                    
+                    .login-modal__form
+                        input.create-event-form__input#login-modal-input(type="password", placeholder="Contraseña...")
+                        button.create-event-form__save#login-modal-submit(type="button") Entrar
+
+    //- Modal confirmar guardado
+    #confirm-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
+        .event-modal__backdrop#confirm-modal-backdrop
+        .event-modal__panel(tabindex="-1")
+            button.event-modal__close#confirm-modal-close(type="button", aria-label="Cerrar") ×
+            
+            h2.event-modal__title Sesión Guardada
+            p.event-modal__description ¡Contraseña correcta! ¿Quieres "Mantener la sesión iniciada" en este navegador?
+            
+            .confirm-modal__buttons
+                button.event-modal__delete#confirm-modal-no(type="button") No, gracias
+                button.create-event-form__save#confirm-modal-yes(type="button") Sí, guardar
+
+    //- modal alerta
+    #alert-modal.event-modal(role="alertdialog", aria-modal="true", aria-hidden="true")
+        .event-modal__backdrop#alert-modal-backdrop
+        .event-modal__panel(tabindex="-1")
+            
+            h2.event-modal__title.alert-modal__title Mensaje
+            p.event-modal__description#alert-modal-description
+                | Aquí va el mensaje...
+            
+            .alert-modal__buttons
+                button.create-event-form__save#alert-modal-ok(type="button") Entendido

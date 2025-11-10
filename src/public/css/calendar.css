@@ -77,7 +77,7 @@ Eventos de Google (pildora oscurita) */
     transform: scale(1.03);
 }
 
-/* 5.2 Eventos de Notion (p´ildora naranja) */
+/* Eventos de Notion (p´ildora naranja) */
 .notion-event,
 .fc-event.notion-event {
     background: rgba(255, 159, 67, 0.4) !important;
