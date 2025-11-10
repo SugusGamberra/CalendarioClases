@@ -4,72 +4,47 @@ import { saveEvent, deleteEvent } from './api.js';
 import { initModalHandlers, initFooterEffect, initLogoutButton } from './ui.js';
 
 // contraseña
-
 const TOKEN_STORAGE_KEY = 'calendar_auth_token';
 
 let cachedToken = null;
 
-function getAuthToken() {
-    const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
-    if (storedToken) {
-        cachedToken = storedToken;
-        return storedToken;
-    }
-
-    if (cachedToken) {
-        return cachedToken;
-    }
-    
-    const password = prompt("¡Acción protegida! Introduce la contraseña de administrador:");
-    
-    if (password) {
-        cachedToken = password;
-        return password;
-    }
-    
-    return null;
-}
-
-// guardar token en el localStorage
-
-function askToRememberToken(token) {
-    if (localStorage.getItem(TOKEN_STORAGE_KEY)) {
-        return;
-    }
-
-    if (confirm("¡Contraseña correcta! ¿Quieres 'Mantener la sesión iniciada' en este navegador?")) {
-        localStorage.setItem(TOKEN_STORAGE_KEY, token);
-        alert("¡Sesión guardada! No volverás a ver este mensaje.");
-    }
-}
-
 // listener del html
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Calendario
     const calendarEl = document.getElementById('calendario');
     const { 
         apiKey, 
         calendarId, 
-        notionCalendarId
+        notionCalendarId,
     } = calendarEl.dataset;
 
-    // ver
+    // Modal ver
     const viewModalEl = document.getElementById('event-modal');
     const modalTitle = viewModalEl.querySelector('.event-modal__title');
     const modalTime = viewModalEl.querySelector('.event-modal__time');
     const modalDescription = viewModalEl.querySelector('.event-modal__description');
     
-    // crear
+    // Modal crear
     const createModalEl = document.getElementById('create-event-modal');
     const createModalTitleInput = createModalEl.querySelector('#event-title-input');
     const createModalDescInput = createModalEl.querySelector('#event-desc-input');
     const createModalStartInput = createModalEl.querySelector('#event-start-input');
     const createModalEndInput = createModalEl.querySelector('#event-end-input');
 
-    // footer
+    // Modal login
+    const loginModalEl = document.getElementById('login-modal');
+    const loginModalInput = loginModalEl.querySelector('#login-modal-input');
+    
+    // Modal confirmar
+    const confirmModalEl = document.getElementById('confirm-modal');
+
+    // modal alerta
+
+    const alertModalEl = document.getElementById('alert-modal');
+
+    // Footer y Logout
     const footerInner = document.querySelector('.footer__inner');
-
-    // boton const cerrar sesion
-
     const logoutButton = document.getElementById('logout-btn');
 
     // handlers de la UI
@@ -83,19 +58,75 @@ document.addEventListener('DOMContentLoaded', () => {
             el: createModalEl,
             closeBtn: createModalEl.querySelector('#create-modal-close'),
             backdrop: createModalEl.querySelector('#create-modal-backdrop')
+        },
+        login: { 
+            el: loginModalEl,
+            input: loginModalEl.querySelector('#login-modal-input'),
+            submitBtn: loginModalEl.querySelector('#login-modal-submit'),
+            closeBtn: loginModalEl.querySelector('#login-modal-close'),
+            backdrop: loginModalEl.querySelector('#login-modal-backdrop')
+        },
+        confirm: { 
+            el: confirmModalEl,
+            yesBtn: confirmModalEl.querySelector('#confirm-modal-yes'),
+            noBtn: confirmModalEl.querySelector('#confirm-modal-no'),
+            closeBtn: confirmModalEl.querySelector('#confirm-modal-close'),
+            backdrop: confirmModalEl.querySelector('#confirm-modal-backdrop')
+        },
+        alert: {
+            el: alertModalEl,
+            title: alertModalEl.querySelector('.alert-modal__title'),
+            description: alertModalEl.querySelector('#alert-modal-description'),
+            okBtn: alertModalEl.querySelector('#alert-modal-ok'),
+            backdrop: alertModalEl.querySelector('#alert-modal-backdrop')
         }
     });
 
-    // inicializacion footer
     initFooterEffect(footerInner, createParticleEffect);
-
-    // Botón cerrar sesion
-
+    
     initLogoutButton(logoutButton, () => {
         localStorage.removeItem(TOKEN_STORAGE_KEY);
         cachedToken = null;
-        alert("¡Sesión cerrada! La próxima vez se te pedirá la contraseña.");
+        ui.showAlert("Sesión Cerrada", "La próxima vez se te pedirá la contraseña.");
     });
+
+
+    // lógica del login
+    async function getAuthToken() {
+        const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);
+        if (storedToken) {
+            cachedToken = storedToken;
+            return storedToken;
+        }
+
+        if (cachedToken) {
+            return cachedToken;
+        }
+        
+        try {
+            const password = await ui.getAuthToken();
+            cachedToken = password; 
+            return password;
+        } catch {
+            return null;
+        }
+    }
+
+    async function askToRememberToken(token) {
+        if (localStorage.getItem(TOKEN_STORAGE_KEY)) {
+            return;
+        }
+
+        try {
+            await ui.askToRememberToken();
+            localStorage.setItem(TOKEN_STORAGE_KEY, token);
+            await ui.showAlert("¡Sesión Guardada!", "No volverás a ver este mensaje en este navegador.");
+
+        } catch {
+            console.log("El usuario decidió no guardar la sesión.");
+        }
+    }
+
 
     // creación calendario
     const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -108,41 +139,28 @@ document.addEventListener('DOMContentLoaded', () => {
         height: 'auto',
         selectable: true,
         selectMirror: true, 
-        slotLabelFormat: {
-            hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false
-        },
+        slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
             right: 'dayGridMonth,timeGridWeek,timeGridDay'
         },
-        
-        // fuentes de eventos
         googleCalendarApiKey: apiKey,
         eventSources: [
             { googleCalendarId: calendarId, className: 'gcal-event' },
             { googleCalendarId: notionCalendarId, color: '#ff9f43', className: 'notion-event' }
         ],
-
-        // clic (modal ver)
         eventClick: (info) => {
             info.jsEvent.preventDefault();
             createModalEl.setAttribute('aria-hidden', 'true');
-            // ID de borrar (guardado)
             ui.registerEventIdToDelete(info.event.id);
-            // Rellenar datos
             modalTitle.textContent = info.event.title;
             const startTime = formatTime(info.event.start);
             const endTime = formatTime(info.event.end);
             modalTime.textContent = `${startTime} - ${endTime}`;
             modalDescription.innerHTML = info.event.extendedProps.description || 'No hay descripción disponible.';
-            // Abrir
             viewModalEl.setAttribute('aria-hidden', 'false');
         },
-
-        // clci hueco vacío (crear)
         select: (selectionInfo) => {
             viewModalEl.setAttribute('aria-hidden', 'true');
             createModalTitleInput.value = '';
@@ -153,14 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => createModalTitleInput.focus(), 100);
             calendar.unselect(); 
         }
-        
     });
 
     calendar.render();
 
     
-    // botón guardar (crear)
-    createModalEl.querySelector('#create-modal-save').addEventListener('click', () => {
+    // Botón guardar
+    createModalEl.querySelector('#create-modal-save').addEventListener('click', async () => {
         const eventData = {
             title: createModalTitleInput.value,
             description: createModalDescInput.value,
@@ -172,37 +189,41 @@ document.addEventListener('DOMContentLoaded', () => {
             return alert('¡Oye! El título, el inicio y el fin son obligatorios.');
         }
 
-        const token = getAuthToken();
-        if (!token) return; 
+        try {
+            const token = await getAuthToken(); 
+            if (!token) return;
 
-        saveEvent(eventData, token)
-            .then(() => {
-                askToRememberToken(token);
-            })
-            .catch((err) => { console.error("Fallo al guardar:", err); })
-            .finally(() => {
-                createModalEl.setAttribute('aria-hidden', 'true');
-                setTimeout(() => calendar.refetchEvents(), 3000); 
-            });
+            await saveEvent(eventData, token);
+            
+            await askToRememberToken(token);
+
+        } catch (err) {
+            console.error("Fallo al guardar:", err);
+        } finally {
+            createModalEl.setAttribute('aria-hidden', 'true');
+            setTimeout(() => calendar.refetchEvents(), 3000); 
+        }
     });
 
-    // botón borrar (ver)
-    viewModalEl.querySelector('#modal-delete-btn').addEventListener('click', () => {
+    // botón borrar
+    viewModalEl.querySelector('#modal-delete-btn').addEventListener('click', async () => {
         const eventId = ui.getEventIdToDelete();
         
-        const token = getAuthToken();
-        if (!token) return;
+        try {
+            const token = await getAuthToken();
+            if (!token) return;
 
-        deleteEvent(eventId, token)
-            .then(() => {
-                askToRememberToken(token);
-            })
-            .catch((err) => { console.error("Fallo al borrar:", err); })
-            .finally(() => {
-                viewModalEl.setAttribute('aria-hidden', 'true');
-                ui.clearEventIdToDelete();
-                setTimeout(() => calendar.refetchEvents(), 5000);
-            });
+            await deleteEvent(eventId, token);
+
+            await askToRememberToken(token);
+
+        } catch (err) {
+            console.error("Fallo al borrar:", err);
+        } finally {
+            viewModalEl.setAttribute('aria-hidden', 'true');
+            ui.clearEventIdToDelete();
+            setTimeout(() => calendar.refetchEvents(), 5000);
+        }
     });
     
 });

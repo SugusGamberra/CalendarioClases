@@ -186,3 +186,40 @@
     box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
     transform: scale(1.02);
 }
+
+/* login */
+#login-modal-input {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.confirm-modal__buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.confirm-modal__buttons button {
+    flex: 1;
+    margin-top: 0 !important;
+}
+
+/* modal alerta*/
+
+.alert-modal__title {
+    font-size: 1.5rem;
+}
+
+#alert-modal-description {
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+.alert-modal__buttons {
+    margin-top: 25px;
+    width: 100%;
+}
+
+#alert-modal-ok {
+    width: 100%;
+}
