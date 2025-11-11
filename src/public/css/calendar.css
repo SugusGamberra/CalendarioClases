@@ -138,23 +138,14 @@ Eventos de Google (pildora oscurita) */
 /* all day slot (branch allDay) */
 
 #calendario-wrapper .fc .fc-allday-slot-label {
-    /* text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 60px !important;
     font-size: 1.6rem !important;
-    padding-top: 5px; */
-    width: 60px !important;    
-    height: 40px !important;
-    background-image: url('/img/studying.png');
-    background-size: 24px 24px;
-    background-repeat: no-repeat;
-    background-position: center;
-    text-indent: -9999px;
-    overflow: hidden;
-    font-size: 0;
+    padding-top: 5px;
 }
 
 #calendario-wrapper .fc-timegrid-allday-cushion .fc-event {
