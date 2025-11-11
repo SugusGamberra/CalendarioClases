@@ -3,6 +3,28 @@ import { formatTime, createParticleEffect } from './utils.js';
 import { saveEvent, deleteEvent } from './api.js';
 import { initModalHandlers, initFooterEffect, initLogoutButton } from './ui.js';
 
+// evento largo = allday
+
+function transformarEventoLargoEnAllDay(eventData) {
+    if (eventData.allDay) {
+        return eventData;
+    }
+
+    if (eventData.start && eventData.end) {
+        const start = new Date(eventData.start);
+        const end = new Date(eventData.end);
+        const durationMs = end.getTime() - start.getTime();
+        const durationHours = durationMs / (1000 * 60 * 60);
+
+        if (durationHours >= 8) {
+            eventData.allDay = true;
+            eventData.startTime = ''; 
+            eventData.endTime = '';
+        }
+    }
+    return eventData;
+}
+
 // contraseña
 const TOKEN_STORAGE_KEY = 'calendar_auth_token';
 
@@ -133,8 +155,9 @@ document.addEventListener('DOMContentLoaded', () => {
         initialView: 'timeGridWeek',
         locale: 'es',
         weekends: false,
-        allDaySlot: false,
-        slotMinTime: '07:00:00',
+        allDaySlot: true,
+        allDayText:'☁️',
+        slotMinTime: '08:00:00',
         slotMaxTime: '20:00:00',
         height: 'auto',
         selectable: true,
@@ -148,8 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         googleCalendarApiKey: apiKey,
         eventSources: [
-            { googleCalendarId: calendarId, className: 'gcal-event' },
-            { googleCalendarId: notionCalendarId, color: '#ff9f43', className: 'notion-event' }
+            { googleCalendarId: calendarId, className: 'gcal-event', eventDataTransform: transformarEventoLargoEnAllDay },
+            { googleCalendarId: notionCalendarId, color: '#ff9f43', className: 'notion-event', eventDataTransform: transformarEventoLargoEnAllDay }
         ],
         eventClick: (info) => {
             info.jsEvent.preventDefault();
