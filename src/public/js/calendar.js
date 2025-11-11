@@ -138,7 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
         slotMaxTime: '20:00:00',
         height: 'auto',
         selectable: true,
-        selectMirror: true, 
+        selectMirror: true,
+        nowIndicator: true, 
         slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         headerToolbar: {
             left: 'prev,next today',
