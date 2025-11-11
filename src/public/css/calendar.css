@@ -48,7 +48,6 @@ Eventos de Google (pildora oscurita) */
 .fc-event.gcal-event {
     background: rgba(0, 0, 0, 0.2) !important;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border-radius: 50px !important;
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -85,7 +84,6 @@ Eventos de Google (pildora oscurita) */
 .fc-event.notion-event {
     background: rgba(255, 159, 67, 0.4) !important;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border-radius: 50px !important;
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -135,4 +133,42 @@ Eventos de Google (pildora oscurita) */
     border-radius: 50% !important;
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.7) !important;
     transform: translateY(-4px) !important; 
+}
+
+/* all day slot (branch allDay) */
+
+#calendario-wrapper .fc .fc-allday-slot-label {
+    /* text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 60px !important;
+    font-size: 1.6rem !important;
+    padding-top: 5px; */
+    width: 60px !important;    
+    height: 40px !important;
+    background-image: url('/img/studying.png');
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+    text-indent: -9999px;
+    overflow: hidden;
+    font-size: 0;
+}
+
+#calendario-wrapper .fc-timegrid-allday-cushion .fc-event {
+    background: rgba(0, 0, 0, 0.2) !important;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 4px !important; 
+    padding: 2px 6px !important;
+}
+
+#calendario-wrapper .fc-timegrid-allday-cushion .fc-event-main {
+    color: #ffffff !important;
+    font-weight: 600;
+    text-align: center;
+    padding: 0 !important;
 }
