@@ -145,49 +145,75 @@
     color-scheme: dark;
 }
 
-.create-event-form__save {
-    width: 100%;
-    padding: 14px;
-    font-size: 1.1rem;
-    font-weight: 700;
-    font-family: 'Poppins', sans-serif;
-    color: #1a1a1a;
-    background: #ffffff;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
+/* Unificacion: crear, editar y borrar */
+.event-modal__actions {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    padding: 0 25px; 
+    margin-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); 
+    padding-top: 20px;
 }
 
-.create-event-form__save:hover {
-    background: #dddddd;
-    transform: scale(1.02);
-}
-
-/* Borrar evento */
-
-.event-modal__delete {
+.create-event-form__save, 
+.event-modal__delete, 
+.event-modal__edit { 
     width: 100%;
     padding: 12px;
-    margin-top: 25px;
+    margin-top: 15px; 
     font-size: 1rem;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
     color: #ffffff;
-    background: rgba(220, 53, 69, 0.6);
-    border: 1px solid rgba(220, 53, 69, 0.8);
+    background: rgba(114, 114, 114, 0.6);
+    border: 1px solid rgba(143, 143, 143, 0.8);
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin-bottom: 0 !important;
 }
 
-.event-modal__delete:hover {
+.event-modal__edit:hover {
+    background: rgba(136, 212, 146, 0.9);
+    box-shadow: 0 0 15px rgba(52, 146, 67, 0.5);
+    transform: scale(1.02);
+}
+
+.create-event-form__save:hover {
+    background: rgba(53, 131, 220, 0.9);
+    box-shadow: 0 0 15px rgba(53, 131, 220, 0.5);
+    transform: scale(1.02);
+}
+
+.event-modal__delete:hover{
     background: rgba(220, 53, 69, 0.9);
     box-shadow: 0 0 15px rgba(220, 53, 69, 0.5);
     transform: scale(1.02);
 }
 
 /* login */
+#login-modal .create-event-form__save#login-modal-submit {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px; 
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    color: #ffffff;
+    background: rgba(114, 114, 114, 0.6);
+    border: 1px solid rgba(143, 143, 143, 0.8);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#login-modal .create-event-form__save#login-modal-submit:hover {
+    background: rgba(220, 53, 69, 0.9);
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.5); 
+    transform: scale(1.02);
+}
+
 #login-modal-input {
     margin-top: 15px;
     margin-bottom: 20px;
