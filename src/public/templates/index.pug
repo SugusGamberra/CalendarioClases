@@ -19,6 +19,7 @@ block content
             button#logout-btn(type="button") Cerrar Sesión
 
     //- modales
+    //- modal de vista (event modal)
     #event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
         .event-modal__backdrop
         .event-modal__panel(tabindex="-1")
@@ -26,16 +27,20 @@ block content
             h2.event-modal__title
             p.event-modal__time
             div.event-modal__description
-            button.event-modal__delete#modal-delete-btn(type="button") Eliminar Evento
+            .event-modal__actions
+                button.event-modal__edit#modal-edit-btn(type="button", aria-label="Editar Evento", style="display: none;") Editar Evento
+                button.event-modal__delete#modal-delete-btn(type="button", aria-label="Eliminar Evento", style="display: none;") Eliminar Evento
     
+    //- modal de creacion
     #create-event-modal.event-modal(role="dialog", aria-modal="true", aria-hidden="true")
         .event-modal__backdrop#create-modal-backdrop
         .event-modal__panel(tabindex="-1")
             button.event-modal__close#create-modal-close(type="button", aria-label="Cerrar") ×
             
-            h2.event-modal__title Crear Nuevo Evento
+            h2.event-modal__title#create-modal-title Crear Nuevo Evento
             
             .create-event-form
+                input.create-event-form__input#event-id-input(type="hidden", value="")
                 div
                     label.create-event-form__label(for="event-title-input") Título
                     input.create-event-form__input#event-title-input(type="text", placeholder="Ej: Comprar el pan")
