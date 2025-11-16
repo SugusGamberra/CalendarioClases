@@ -7,6 +7,14 @@ if (process.env.NODE_ENV !== 'production') {
     require("dotenv").config({path: path.join(__dirname, '../../.env')});
 }
 
+const TOKEN_SECRETO_APP = process.env.SECRET_TOKEN;
+
+if (!TOKEN_SECRETO_APP) {
+    console.error("ERROR FATAL");
+    process.exit(1);
+}
+console.log("Token secreto cargado");
+
 const app = express();
 
 // Configuración de rutas y carpetas
