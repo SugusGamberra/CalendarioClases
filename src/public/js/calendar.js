@@ -244,6 +244,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botón guardar/actualizar
     createModalEl.querySelector('#create-modal-save').addEventListener('click', async () => {
+        
+        const isEditing = !!createModalIdInput.value; 
+
+        const eventData = {
+            title: createModalTitleInput.value,
+            description: createModalDescInput.value,
+            start: createModalStartInput.value,
+            end: createModalEndInput.value,
+        };
+        
+        if (isEditing) {
+            eventData.eventId = createModalIdInput.value;
+        }
+
+        if (!eventData.title || !eventData.start || !eventData.end) {
+            return alert('¡Oye! El título, el inicio y el fin son obligatorios.');
+        }
+
+        const fechaInicio = new Date(eventData.start);
+        const fechaFin = new Date(eventData.end);
+
+        if (fechaFin <= fechaInicio) {
+            return alert('¡Oye, chatita! 😜 La fecha de fin no puede ser ANTES (o igual) que la fecha de inicio. ¡Revisa las horas!');
+        }
+
         try {
             const token = await getAuthToken(); 
             if (!token) return;
@@ -256,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             await askToRememberToken(token);
 
-            await wait(3000);
+            await wait(3000); 
             calendar.refetchEvents();
 
         } catch (err) {
