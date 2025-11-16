@@ -27,3 +27,6 @@ export const createParticleEffect = (e) => {
         particle.remove();
     }, 1000);
 };
+
+// pausa para await
+export const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));

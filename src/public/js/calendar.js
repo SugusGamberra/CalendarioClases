@@ -1,5 +1,5 @@
 // importación módulos
-import { formatTime, createParticleEffect } from './utils.js';
+import { formatTime, createParticleEffect, wait } from './utils.js';
 import { saveEvent, deleteEvent, updateEvent } from './api.js';
 import { initModalHandlers, initFooterEffect, initLogoutButton } from './ui.js';
 
@@ -244,23 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Botón guardar/actualizar
     createModalEl.querySelector('#create-modal-save').addEventListener('click', async () => {
-        const isEditing = !!createModalIdInput.value; 
-
-        const eventData = {
-            title: createModalTitleInput.value,
-            description: createModalDescInput.value,
-            start: createModalStartInput.value,
-            end: createModalEndInput.value,
-        };
-        if (isEditing) {
-            eventData.eventId = createModalIdInput.value;
-        }
-
-
-        if (!eventData.title || !eventData.start || !eventData.end) {
-            return alert('¡Oye! El título, el inicio y el fin son obligatorios.');
-        }
-
         try {
             const token = await getAuthToken(); 
             if (!token) return;
@@ -273,20 +256,21 @@ document.addEventListener('DOMContentLoaded', () => {
             
             await askToRememberToken(token);
 
+            await wait(3000);
+            calendar.refetchEvents();
+
         } catch (err) {
             console.error("Fallo al guardar/actualizar:", err);
         } finally {
             createModalEl.setAttribute('aria-hidden', 'true');
             createModalIdInput.value = ''; 
             createModalTitleEl.textContent = 'Crear Nuevo Evento';
-            setTimeout(() => calendar.refetchEvents(), 3000); 
         }
     });
 
     // botón borrar
     viewModalEl.querySelector('#modal-delete-btn').addEventListener('click', async () => {
         const eventId = ui.getEventIdToDelete();
-        
         try {
             const token = await getAuthToken();
             if (!token) return;
@@ -294,6 +278,8 @@ document.addEventListener('DOMContentLoaded', () => {
             await deleteEvent(eventId, token);
 
             await askToRememberToken(token);
+            await wait(5000);
+            calendar.refetchEvents();
 
         } catch (err) {
             console.error("Fallo al borrar:", err);
@@ -301,8 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
             viewModalEl.setAttribute('aria-hidden', 'true');
             ui.clearEventIdToDelete();
             currentSelectedEvent = null;
-            setTimeout(() => calendar.refetchEvents(), 5000);
         }
     });
-    
-});
+})
