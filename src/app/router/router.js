@@ -10,125 +10,49 @@ router.get("/", (req, res) => {
     });
 });
 
-// rest apis
-// CREAR:
-router.post("/api/events", async (req, res) => {
+// API centralizada
+router.post("/api/create", async (req, res) => {
     try {
         const tokenRecibido = req.headers.authorization?.split(' ')[1];
         const tokenSecreto = process.env.SECRET_TOKEN;
-        
-        if (!tokenRecibido || tokenRecibido !== tokenSecreto) {
-            console.warn(`¡Intento de CREACIÓN con token incorrecto!`);
-            return res.status(401).json({ error: "No autorizado. Token inválido." });
-        }
-
-        console.log(`Recibida petición para CREAR (Autorizado).`);
         const eventData = req.body;
-        const urlSecreta = process.env.MAKE_WEBHOOK_URL;
         
-        if (!urlSecreta) {
-            throw new Error(`Falta la URL del webhook de Make para 'create'`);
-        }
+        // crear, editar y borrar
+        const action = eventData.action; 
 
-        const makeResponse = await fetch(urlSecreta, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(eventData)
-        });
-
-        if (!makeResponse.ok) {
-            const makeErrorText = await makeResponse.text();
-            throw new Error(`Error en Make.com (create): ${makeErrorText}`);
-        }
-        
-        res.status(200).json({ message: "Evento creado con éxito" });
-
-    } catch (error) {
-        console.error(`Error en POST /api/events:`, error.message);
-        res.status(500).json({ error: `No se pudo crear. Detalles: ${error.message}` });
-    }
-});
-
-// EDITAR
-router.put("/api/events/:eventId", async (req, res) => {
-    try {
-        const tokenRecibido = req.headers.authorization?.split(' ')[1];
-        const tokenSecreto = process.env.SECRET_TOKEN;
-        
         if (!tokenRecibido || tokenRecibido !== tokenSecreto) {
-            console.warn(`¡Intento de ACTUALIZAR con token incorrecto!`);
+            console.warn(`¡Intento de ${action?.toUpperCase() || 'ACCIÓN'} con token incorrecto!`);
             return res.status(401).json({ error: "No autorizado. Token inválido." });
         }
 
-        console.log(`Recibida petición para ACTUALIZAR (Autorizado).`);
+        const urlSecretaMake = process.env.MAKE_WEBHOOK_URL;
         
-        const eventData = req.body;
-        const eventId = req.params.eventId;
-        const urlSecreta = process.env.MAKE_UPDATE_WEBHOOK_URL;
+        if (!urlSecretaMake) {
+            throw new Error(`Falta la URL del webhook de Make (MAKE_WEBHOOK_URL)`);
+        }
         
-        if (!urlSecreta) {
-            throw new Error(`Falta la URL del webhook de Make para 'update'`);
+        if (!action) {
+            throw new Error(`No se especificó ninguna 'action' en el body.`);
         }
 
-        const payload = { ...eventData, eventId: eventId };
+        console.log(`Recibida petición para ${action.toUpperCase()} (Autorizado).`);
 
-        const makeResponse = await fetch(urlSecreta, {
+        const makeResponse = await fetch(urlSecretaMake, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(eventData) // Mandamos todo, incluida la 'action'
         });
 
         if (!makeResponse.ok) {
             const makeErrorText = await makeResponse.text();
-            throw new Error(`Error en Make.com (update): ${makeErrorText}`);
+            throw new Error(`Error en la respuesta de Make.com (${makeResponse.status}): ${makeErrorText}`);
         }
         
-        res.status(200).json({ message: "Evento actualizado con éxito" });
+        res.status(200).json({ message: "Acción procesada por Make con éxito" });
 
     } catch (error) {
-        console.error(`Error en PUT /api/events/:eventId:`, error.message);
-        res.status(500).json({ error: `No se pudo actualizar. Detalles: ${error.message}` });
-    }
-});
-
-// BORRAR:
-router.delete("/api/events/:eventId", async (req, res) => {
-    try {
-        const tokenRecibido = req.headers.authorization?.split(' ')[1];
-        const tokenSecreto = process.env.SECRET_TOKEN;
-        
-        if (!tokenRecibido || tokenRecibido !== tokenSecreto) {
-            console.warn(`¡Intento de BORRADO con token incorrecto!`);
-            return res.status(401).json({ error: "No autorizado. Token inválido." });
-        }
-
-        console.log(`Recibida petición para BORRAR (Autorizado).`);
-        
-        const eventId = req.params.eventId;
-        const urlSecreta = process.env.MAKE_DELETE_WEBHOOK_URL;
-        
-        if (!urlSecreta) {
-            throw new Error(`Falta la URL del webhook de Make para 'delete'`);
-        }
-
-        const payload = { eventId: eventId };
-
-        const makeResponse = await fetch(urlSecreta, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
-
-        if (!makeResponse.ok) {
-            const makeErrorText = await makeResponse.text();
-            throw new Error(`Error en Make.com (delete): ${makeErrorText}`);
-        }
-        
-        res.status(200).json({ message: "Evento borrado con éxito" });
-
-    } catch (error) {
-        console.error(`Error en DELETE /api/events/:eventId:`, error.message);
-        res.status(500).json({ error: `No se pudo borrar. Detalles: ${error.message}` });
+        console.error(`Error en /api/create:`, error.message);
+        res.status(500).json({ error: `No se pudo completar la acción. Detalles: ${error.message}` });
     }
 });
 

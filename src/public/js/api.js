@@ -1,19 +1,21 @@
 // CREAR
 export const saveEvent = (eventData, token) => { 
-    console.log('Enviando señal para creación de evento...');
+    console.log('Enviando señal de CREACIÓN a nuestro servidor (/api/create)...');
     
-    return fetch('/api/events', {
+    const payload = { ...eventData, action: 'create' };
+    
+    return fetch('/api/create', {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(eventData)
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (response.status === 401) throw new Error('Contraseña (token) incorrecta.');
-        if (!response.ok) throw new Error('La respuesta de /api/events no fue OK');
-        console.log('Creación de evento exitosa!');
+        if (!response.ok) throw new Error('La respuesta de /api/create no fue OK');
+        console.log('¡Servidor contestó OK a la creación!');
         return Promise.resolve(response);
     })
     .catch(error => {
@@ -23,29 +25,32 @@ export const saveEvent = (eventData, token) => {
     });
 };
 
-// BORRAR
+// BORRRAR
 export const deleteEvent = (eventId, token) => { 
     if (!eventId) {
         alert('Error: No se ha seleccionado ningún ID de evento.');
         return Promise.reject('No event ID');
     }
     
-    console.log('Borrando evento del calendario, ID:', eventId);
-    
-    return fetch(`/api/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {
+    console.log('Enviando señal de BORRADO a nuestro servidor (/api/create)...', eventId);
+    const payload = { eventId: eventId, action: 'delete' };
+
+    return fetch('/api/create', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
             'Authorization': `Bearer ${token}`
         },
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (response.status === 401) throw new Error('Contraseña (token) incorrecta.');
-        if (!response.ok) throw new Error('La respuesta de /api/events (DELETE) no fue OK');
-        console.log('Se borró el evento con éxito!');
+        if (!response.ok) throw new Error('La respuesta de /api/create (DELETE) no fue OK');
+        console.log('¡Servidor contestó OK al borrar!');
         return Promise.resolve(response);
     })
     .catch(error => {
-        console.error('Error llamando a /api/events (DELETE):', error);
+        console.error('¡Error llamando a /api/create (DELETE)!:', error);
         alert(`Error al borrar: ${error.message}`);
         return Promise.reject(error);
     });
@@ -53,31 +58,31 @@ export const deleteEvent = (eventId, token) => {
 
 // EDITAR
 export const updateEvent = (eventData, token) => { 
-    const eventId = eventData.eventId;
-    
-    if (!eventId) {
+    if (!eventData.eventId) {
         alert('Error: No hay ID de evento para actualizar.');
         return Promise.reject('No event ID for update');
     }
     
-    console.log('Editando evento del calendario... ID:', eventId);
+    console.log('Enviando señal de ACTUALIZACIÓN a nuestro servidor (/api/create)...', eventData.eventId);
     
-    return fetch(`/api/events/${eventId}`, {
-        method: 'PUT',
+    const payload = { ...eventData, action: 'update' };
+
+    return fetch('/api/create', {
+        method: 'POST',
         headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(eventData)
+        body: JSON.stringify(payload)
     })
     .then(response => {
         if (response.status === 401) throw new Error('Contraseña (token) incorrecta.');
-        if (!response.ok) throw new Error('La respuesta de /api/events (PUT) no fue OK');
-        console.log('Edición de evento exitosa!');
+        if (!response.ok) throw new Error('La respuesta de /api/create (UPDATE) no fue OK');
+        console.log('¡Servidor contestó OK a la actualización!');
         return Promise.resolve(response);
     })
     .catch(error => {
-        console.error('Error llamando a /api/events (PUT):', error);
+        console.error('¡Error llamando a /api/create (UPDATE)!:', error);
         alert(`Error al actualizar: ${error.message}`);
         return Promise.reject(error);
     });
